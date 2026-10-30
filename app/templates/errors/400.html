@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Bad request{% endblock %}
+{% block content %}
+<div class="error-page">
+  <p class="error-code">400</p>
+  <h1>That request didn't go through.</h1>
+  <p>{{ message or 'Please reload the page and try again.' }}</p>
+  <div class="page-actions">
+    <a class="btn btn-primary" href="{{ url_for('dashboard.index') if g.user else url_for('auth.login') }}">Go back</a>
+  </div>
+</div>
+{% endblock %}

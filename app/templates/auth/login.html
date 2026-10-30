@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Sign in{% endblock %}
+{% block body_class %}auth-body{% endblock %}
+{% block content %}
+<div class="auth-layout">
+  <section class="auth-story">
+    <a class="brand brand-invert" href="{{ url_for('auth.login') }}">
+      <span class="brand-mark" aria-hidden="true">S</span>
+      <span class="brand-copy"><strong>SHA</strong><span>LeadFlow</span></span>
+    </a>
+    <p class="eyebrow eyebrow-light">SHA Interface Interiors</p>
+    <h1>Every enquiry,<br>followed through.</h1>
+    <p class="auth-lede">A lean lead desk for a design studio: scored enquiries, clear next actions, and follow-ups that don't slip through the cracks.</p>
+    <ul class="auth-points">
+      <li><span aria-hidden="true">01</span> Explainable 0–100 lead scoring</li>
+      <li><span aria-hidden="true">02</span> AI insight that never overrides the score</li>
+      <li><span aria-hidden="true">03</span> Works even when free-tier AI is offline</li>
+    </ul>
+    <p class="auth-footnote">Authorised users only. Sample data is fictional until a data-handling policy is approved.</p>
+  </section>
+
+  <section class="auth-card-wrap">
+    <div class="auth-card">
+      <p class="eyebrow">Private workspace</p>
+      <h2>Sign in</h2>
+      <p class="muted">Use the administrator account created during setup.</p>
+
+      <form method="post" class="stack-form" autocomplete="on">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        {% if request.args.get('next') %}
+          <input type="hidden" name="next" value="{{ request.args.get('next') }}">
+        {% endif %}
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" value="{{ email }}" autocomplete="username" required autofocus>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" required>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit">Sign in</button>
+      </form>
+
+      <p class="auth-help">Forgot the password? Reset it from the server with <code>flask --app wsgi create-admin --force</code>.</p>
+    </div>
+  </section>
+</div>
+{% endblock %}

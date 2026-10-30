@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% from "partials/macros.html" import score_pill, status_badge with context %}
+{% block title %}{{ 'Edit ' ~ lead.name if mode == 'edit' else 'New lead' }}{% endblock %}
+
+{% macro field_error(key) -%}
+  {% if errors.get(key) %}<p class="field-error" id="error-{{ key }}">{{ errors[key] }}</p>{% endif %}
+{%- endmacro %}
+
+{% macro invalid(key) -%}{{ ' is-invalid' if errors.get(key) else '' }}{% endmacro %}
+
+{% block content %}
+<div class="page-head">
+  <div>
+    <p class="eyebrow"><a class="crumb" href="{{ url_for('leads.index') }}">Leads</a> / {{ 'Edit' if mode == 'edit' else 'New' }}</p>
+    <h1>{{ 'Edit lead' if mode == 'edit' else 'Add a lead' }}</h1>
+    <p class="lede">
+      {% if mode == 'edit' %}
+        Update the brief and contact details. The deterministic score is recalculated on save.
+      {% else %}
+        Capture the enquiry. The deterministic score is calculated immediately on save.
+      {% endif %}
+    </p>
+  </div>
+  {% if mode == 'edit' %}
+  <div class="page-actions">
+    <a class="btn btn-ghost" href="{{ url_for('leads.detail', lead_id=lead.id) }}">Back to lead</a>
+  </div>
+  {% endif %}
+</div>
+
+{% if errors %}
+<div class="notice notice-error" role="alert">
+  <strong>Could not save this lead.</strong>
+  <span>{{ errors.get('duplicate') or 'Please review the highlighted fields below.' }}</span>
+</div>
+{% endif %}
+
+<form method="post" class="lead-form" novalidate>
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="form-layout">
+    <div class="form-main">
+      <section class="panel form-section">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">01 · Contact</p>
+            <h2>Who is enquiring?</h2>
+          </div>
+          <span class="panel-badge">At least one contact</span>
+        </div>
+        <div class="form-grid">
+          <div class="field field-wide">
+            <label for="name">Name <span class="required">*</span></label>
+            <input class="{{ invalid('name') }}" id="name" name="name" type="text" value="{{ form_data.get('name', '') }}" maxlength="120" required autocomplete="name" {{ 'aria-invalid=true aria-describedby=error-name' if errors.get('name') }}>
+            {{ field_error('name') }}
+          </div>
+          <div class="field">
+            <label for="phone">Phone</label>
+            <input class="{{ invalid('phone') }}" id="phone" name="phone" type="tel" value="{{ form_data.get('phone', '') }}" maxlength="32" autocomplete="tel" placeholder="+91 98765 43210" {{ 'aria-invalid=true aria-describedby=error-phone' if errors.get('phone') }}>
+            {{ field_error('phone') }}
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input class="{{ invalid('email') }}" id="email" name="email" type="email" value="{{ form_data.get('email', '') }}" maxlength="254" autocomplete="email" placeholder="name@example.com" {{ 'aria-invalid=true aria-describedby=error-email' if errors.get('email') }}>
+            {{ field_error('email') }}
+          </div>
+          <div class="field field-wide">
+            <label for="locality">Locality</label>
+            <input class="{{ invalid('locality') }}" id="locality" name="locality" type="text" value="{{ form_data.get('locality', '') }}" maxlength="120" placeholder="e.g. Indiranagar, Bengaluru">
+            <p class="hint">Service-area fit is scored against the configured locality list.</p>
+            {{ field_error('locality') }}
+          </div>
+          {% if errors.get('contact') %}<p class="field-error field-wide">{{ errors['contact'] }}</p>{% endif %}
+        </div>
+      </section>
+
+      <section class="panel form-section">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">02 · Project</p>
+            <h2>What are they planning?</h2>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="field">
+            <label for="property_type">Property type</label>
+            <select class="{{ invalid('property_type') }}" id="property_type" name="property_type">
+              <option value="">Select…</option>
+              {% for option in property_types %}
+                <option value="{{ option }}" {{ 'selected' if form_data.get('property_type') == option }}>{{ option }}</option>
+              {% endfor %}
+            </select>
+            {{ field_error('property_type') }}
+          </div>
+          <div class="field">
+            <label for="project_type">Project type</label>
+            <select class="{{ invalid('project_type') }}" id="project_type" name="project_type">
+              <option value="">Select…</option>
+              {% for option in project_types %}
+                <option value="{{ option }}" {{ 'selected' if form_data.get('project_type') == option }}>{{ option }}</option>
+              {% endfor %}
+            </select>
+            {{ field_error('project_type') }}
+          </div>
+          <div class="field">
+            <label for="budget_min">Budget from <span class="label-unit">(₹)</span></label>
+            <input class="{{ invalid('budget_min') }}" id="budget_min" name="budget_min" type="number" inputmode="numeric" min="0" max="1000000000" step="1000" value="{{ form_data.get('budget_min', '') }}" placeholder="800000" {{ 'aria-invalid=true aria-describedby=error-budget_min' if errors.get('budget_min') }}>
+            {{ field_error('budget_min') }}
+          </div>
+          <div class="field">
+            <label for="budget_max">Budget up to <span class="label-unit">(₹)</span></label>
+            <input class="{{ invalid('budget_max') }}" id="budget_max" name="budget_max" type="number" inputmode="numeric" min="0" max="1000000000" step="1000" value="{{ form_data.get('budget_max', '') }}" placeholder="1200000" {{ 'aria-invalid=true aria-describedby=error-budget_max' if errors.get('budget_max') }}>
+            {{ field_error('budget_max') }}
+          </div>
+          <div class="field">
+            <label for="expected_start">Expected start</label>
+            <input class="{{ invalid('expected_start') }}" id="expected_start" name="expected_start" type="date" value="{{ form_data.get('expected_start', '') }}" {{ 'aria-invalid=true aria-describedby=error-expected_start' if errors.get('expected_start') }}>
+            {{ field_error('expected_start') }}
+          </div>
+          <div class="field">
+            <label for="source">Lead source</label>
+            <select class="{{ invalid('source') }}" id="source" name="source">
+              {% for option in lead_sources %}
+                <option value="{{ option }}" {{ 'selected' if form_data.get('source', 'Website') == option }}>{{ option }}</option>
+              {% endfor %}
+            </select>
+            {{ field_error('source') }}
+          </div>
+          {% if mode == 'edit' %}
+          <div class="field">
+            <label for="status">Status</label>
+            <select class="{{ invalid('status') }}" id="status" name="status">
+              {% for option in lead_statuses %}
+                <option value="{{ option }}" {{ 'selected' if form_data.get('status') == option }}>{{ option }}</option>
+              {% endfor %}
+            </select>
+            {{ field_error('status') }}
+          </div>
+          {% endif %}
+          <div class="field field-wide">
+            <div class="label-row">
+              <label for="requirements">Requirements</label>
+              <span class="counter" data-counter-for="requirements"><span>0</span>/5000</span>
+            </div>
+            <textarea class="{{ invalid('requirements') }}" id="requirements" name="requirements" rows="7" maxlength="5000" data-counter="requirements" placeholder="Scope, rooms, style, timeline, decision stage…">{{ form_data.get('requirements', '') }}</textarea>
+            <p class="hint">The AI qualifier reads this brief, but never sets the numeric score. Avoid real customer data until the studio approves an AI data policy.</p>
+            {{ field_error('requirements') }}
+          </div>
+        </div>
+      </section>
+
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit" data-submit-once>{{ 'Save changes' if mode == 'edit' else 'Create lead' }}</button>
+        <a class="btn btn-ghost" href="{{ url_for('leads.detail', lead_id=lead.id) if mode == 'edit' else url_for('leads.index') }}">Cancel</a>
+      </div>
+    </div>
+
+    <aside class="form-aside">
+      <section class="panel aside-card">
+        <p class="eyebrow">Scoring</p>
+        <h3>Deterministic, not trained</h3>
+        <p class="muted small">A fixed 0–100 score combines budget (25), readiness (25), urgency (20), scope (15), and service area (15). The AI can add an explanation but cannot change the score.</p>
+        {% if mode == 'edit' and lead %}
+        <div class="aside-score">
+          {{ score_pill(lead.score, (lead.score_factors or {}).get('band')) }}
+          {{ status_badge(lead.status) }}
+        </div>
+        <p class="muted small">Saving recalculates the score from the current rules.</p>
+        {% endif %}
+      </section>
+      <section class="panel aside-card aside-note">
+        <p class="eyebrow">Data handling</p>
+        <p class="small">AI prompts exclude name, phone, and email. Only project facts and the brief are sent. The app remains fully usable if the provider is unavailable.</p>
+        <span class="ai-state {{ 'is-on' if ai_configured else 'is-off' }}">
+          <span class="ai-dot" aria-hidden="true"></span>{{ 'AI provider configured' if ai_configured else 'AI off — rule-based mode' }}
+        </span>
+      </section>
+    </aside>
+  </div>
+</form>
+{% endblock %}

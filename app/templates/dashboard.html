@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+{% from "partials/macros.html" import score_pill, status_badge, followup_card, empty_state with context %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <p class="eyebrow">{{ today|datefmt("%A, %d %B %Y") }}</p>
+    <h1>Pipeline overview</h1>
+    <p class="lede">Where the studio's enquiries stand today — and what needs a reply next.</p>
+  </div>
+  <div class="page-actions">
+    <a class="btn btn-ghost" href="{{ url_for('leads.import_page') }}">Import CSV</a>
+    <a class="btn btn-primary" href="{{ url_for('leads.new') }}">New lead</a>
+  </div>
+</div>
+
+<section class="stat-grid" aria-label="Key totals">
+  <article class="stat-card">
+    <div class="stat-head">
+      <span class="stat-label">Total leads</span>
+      <span class="stat-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 7.5 12 3l8 4.5-8 4.5-8-4.5Z"/><path d="m4 12 8 4.5 8-4.5M4 16.5 12 21l8-4.5"/></svg>
+      </span>
+    </div>
+    <p class="stat-value">{{ total }}</p>
+    <p class="stat-note">{{ active }} active · {{ won }} won · {{ lost }} lost</p>
+  </article>
+
+  <article class="stat-card">
+    <div class="stat-head">
+      <span class="stat-label">New enquiries</span>
+      <span class="stat-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="3.4"/></svg>
+      </span>
+    </div>
+    <p class="stat-value">{{ status_counts.get('New', 0) }}</p>
+    <p class="stat-note">Awaiting first contact</p>
+  </article>
+
+  <article class="stat-card">
+    <div class="stat-head">
+      <span class="stat-label">Win rate</span>
+      <span class="stat-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m5 12.5 4.2 4L19 7"/></svg>
+      </span>
+    </div>
+    <p class="stat-value">{{ win_rate }}<span class="stat-unit">%</span></p>
+    <p class="stat-note">{% if won + lost == 0 %}No closed leads yet{% else %}{{ won }} won of {{ won + lost }} decided{% endif %}</p>
+  </article>
+
+  <article class="stat-card">
+    <div class="stat-head">
+      <span class="stat-label">Open follow-ups</span>
+      <span class="stat-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.2l3.2 2"/></svg>
+      </span>
+    </div>
+    <p class="stat-value">{{ open_followups }}</p>
+    <p class="stat-note {% if overdue_count %}text-danger{% endif %}">{{ overdue_count }} overdue · {{ due_today_count }} due today</p>
+  </article>
+</section>
+
+<div class="dashboard-grid">
+  <section class="panel span-7">
+    <div class="panel-head">
+      <div>
+        <p class="eyebrow">Pipeline</p>
+        <h2>Conversion by status</h2>
+      </div>
+      <a class="text-link" href="{{ url_for('leads.index') }}">All leads</a>
+    </div>
+    <div class="pipeline">
+      {% for item in pipeline %}
+      <div class="pipeline-row">
+        <div class="pipeline-label">
+          <a href="{{ url_for('leads.index', status=item.status) }}">{{ item.status }}</a>
+          <span>{{ item.count }} <small>{{ item.share }}%</small></span>
+        </div>
+        <div class="bar-track" aria-hidden="true">
+          <span class="bar-fill status-fill-{{ item.status|statusclass }}" style="width: {{ item.bar }}%"></span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="panel-foot">
+      <span><strong>{{ won }}</strong> won</span>
+      <span><strong>{{ lost }}</strong> lost</span>
+      <span><strong>{{ active }}</strong> still active</span>
+      <span class="foot-spacer"></span>
+      <a class="text-link" href="{{ url_for('leads.index', status='Won') }}">Won leads</a>
+    </div>
+  </section>
+
+  <aside class="panel span-5">
+    <div class="panel-head">
+      <div>
+        <p class="eyebrow">Reminders</p>
+        <h2>Follow-up queue</h2>
+      </div>
+      <a class="text-link" href="{{ url_for('followups.index', view='overdue') }}">Overdue {{ overdue_count }}</a>
+    </div>
+
+    {% if overdue %}
+      <h3 class="subhead subhead-danger">Overdue</h3>
+      {% for followup in overdue %}{{ followup_card(followup, 'dashboard') }}{% endfor %}
+    {% endif %}
+    {% if due_today %}
+      <h3 class="subhead">Due today</h3>
+      {% for followup in due_today %}{{ followup_card(followup, 'dashboard') }}{% endfor %}
+    {% endif %}
+    {% if upcoming %}
+      <h3 class="subhead">Next 7 days</h3>
+      {% for followup in upcoming %}{{ followup_card(followup, 'dashboard') }}{% endfor %}
+    {% endif %}
+    {% if not overdue and not due_today and not upcoming %}
+      {{ empty_state("Nothing due", "The queue is clear. Schedule a follow-up from any lead.", url_for('leads.index'), "Open leads") }}
+    {% endif %}
+    <div class="panel-foot">
+      <a class="text-link" href="{{ url_for('followups.index') }}">View all follow-ups</a>
+    </div>
+  </aside>
+
+  <section class="panel span-7">
+    <div class="panel-head">
+      <div>
+        <p class="eyebrow">Priority</p>
+        <h2>High-priority leads</h2>
+      </div>
+      <span class="panel-badge">Score ≥ {{ threshold }}</span>
+    </div>
+    {% if high_priority %}
+    <div class="table-wrap">
+      <table class="data-table compact">
+        <thead>
+          <tr><th>Lead</th><th>Locality</th><th>Score</th><th>Status</th><th><span class="sr-only">Open</span></th></tr>
+        </thead>
+        <tbody>
+          {% for lead in high_priority %}
+          <tr>
+            <td>
+              <a class="table-lead" href="{{ url_for('leads.detail', lead_id=lead.id) }}">
+                <span class="avatar avatar-xs">{{ lead.name|initials }}</span>
+                <span>{{ lead.name }}<small>{{ lead.project_type or 'Scope not set' }}</small></span>
+              </a>
+            </td>
+            <td>{{ lead.locality or '—' }}</td>
+            <td>{{ score_pill(lead.score) }}</td>
+            <td>{{ status_badge(lead.status) }}</td>
+            <td class="cell-action"><a class="row-arrow" href="{{ url_for('leads.detail', lead_id=lead.id) }}" aria-label="Open {{ lead.name }}">→</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+      {{ empty_state("No high-priority leads yet", "Scores of " ~ threshold ~ "+ appear here. Add requirements and budget to improve scoring.", url_for('leads.index'), "Review leads") }}
+    {% endif %}
+  </section>
+
+  <aside class="panel span-5">
+    <div class="panel-head">
+      <div>
+        <p class="eyebrow">Acquisition</p>
+        <h2>Lead sources</h2>
+      </div>
+      <span class="panel-badge">{{ total }} total</span>
+    </div>
+    <div class="source-list">
+      {% for item in sources %}
+      <div class="source-row">
+        <div class="source-label">
+          <a href="{{ url_for('leads.index', source=item.source) }}">{{ item.source }}</a>
+          <span>{{ item.count }}</span>
+        </div>
+        <div class="bar-track" aria-hidden="true"><span class="bar-fill bar-accent" style="width: {{ item.bar }}%"></span></div>
+      </div>
+      {% else %}
+      <p class="muted small">Source data appears after you add or import leads.</p>
+      {% endfor %}
+    </div>
+    <div class="panel-foot">
+      <span>{{ sources|length }} channels tracked</span>
+      <span class="foot-spacer"></span>
+      <a class="text-link" href="{{ url_for('leads.import_page') }}">Import leads</a>
+    </div>
+  </aside>
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Slow down{% endblock %}
+{% block content %}
+<div class="error-page">
+  <p class="error-code">429</p>
+  <h1>A short pause, please.</h1>
+  <p>{{ message or 'Too many requests. Please wait a minute and try again.' }}</p>
+  <div class="page-actions">
+    <a class="btn btn-primary" href="{{ url_for('dashboard.index') if g.user else url_for('auth.login') }}">Back to dashboard</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Something went wrong{% endblock %}
+{% block content %}
+<div class="error-page">
+  <p class="error-code">500</p>
+  <h1>The workspace hit a snag.</h1>
+  <p>The error has been logged privately. No customer data was exposed. Please try again.</p>
+  <div class="page-actions">
+    <a class="btn btn-primary" href="{{ url_for('dashboard.index') if g.user else url_for('auth.login') }}">Back to dashboard</a>
+  </div>
+</div>
+{% endblock %}

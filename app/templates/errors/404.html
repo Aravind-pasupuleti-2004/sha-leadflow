@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Not found{% endblock %}
+{% block content %}
+<div class="error-page">
+  <p class="error-code">404</p>
+  <h1>This page is not on the plan.</h1>
+  <p>The record may have moved, or the address may be incorrect.</p>
+  <div class="page-actions">
+    <a class="btn btn-primary" href="{{ url_for('dashboard.index') if g.user else url_for('auth.login') }}">Dashboard</a>
+    <a class="btn btn-ghost" href="{{ url_for('leads.index') if g.user else url_for('auth.login') }}">Leads</a>
+  </div>
+</div>
+{% endblock %}

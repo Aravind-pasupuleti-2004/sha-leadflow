@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Import leads{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <p class="eyebrow"><a class="crumb" href="{{ url_for('leads.index') }}">Leads</a> / Import</p>
+    <h1>Import leads by CSV</h1>
+    <p class="lede">Bring in an existing enquiry sheet. Invalid rows are reported and skipped; valid rows are saved in a transaction.</p>
+  </div>
+  <div class="page-actions">
+    <a class="btn btn-ghost" href="{{ url_for('leads.import_template') }}">Download template</a>
+    <a class="btn btn-primary" href="{{ url_for('leads.new') }}">Add manually</a>
+  </div>
+</div>
+
+{% if result %}
+<section class="import-result">
+  <div class="stat-grid stat-grid-4">
+    <article class="stat-card"><span class="stat-label">Rows read</span><p class="stat-value">{{ result.total_rows }}</p></article>
+    <article class="stat-card"><span class="stat-label">Created</span><p class="stat-value text-success">{{ result.created }}</p></article>
+    <article class="stat-card"><span class="stat-label">Duplicates skipped</span><p class="stat-value">{{ result.skipped }}</p></article>
+    <article class="stat-card"><span class="stat-label">Row errors</span><p class="stat-value {{ 'text-danger' if result.failed else '' }}">{{ result.failed }}</p></article>
+  </div>
+  {% if result.created %}
+    <p class="notice notice-success"><strong>{{ result.created }} lead{{ 's' if result.created != 1 }} imported.</strong> View them in the <a href="{{ url_for('leads.index') }}">lead list</a>. Scores were calculated automatically.</p>
+  {% endif %}
+  {% if result.errors %}
+  <section class="panel">
+    <div class="panel-head">
+      <div><p class="eyebrow">Review</p><h2>Import issues</h2></div>
+      <span class="panel-badge">{{ result.errors|length }} reported</span>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table compact">
+        <thead><tr><th>Row</th><th>Type</th><th>Details</th></tr></thead>
+        <tbody>
+          {% for issue in result.errors[:100] %}
+          <tr>
+            <td>{{ issue.row or '—' }}</td>
+            <td><span class="badge {{ 'badge-soft' if issue.kind == 'skipped' else 'status-lost' }}">{{ issue.kind|capitalize }}</span></td>
+            <td>{{ issue.message }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% if result.errors|length > 100 %}<div class="panel-foot"><span>Showing the first 100 issues.</span></div>{% endif %}
+  </section>
+  {% endif %}
+</section>
+{% endif %}
+
+<div class="import-grid">
+  <section class="panel form-section">
+    <div class="panel-head">
+      <div><p class="eyebrow">Upload</p><h2>Choose a CSV file</h2></div>
+      <span class="panel-badge">Max {{ max_csv_mb }} MB · {{ "{:,}".format(max_csv_rows) }} rows</span>
+    </div>
+    <form method="post" enctype="multipart/form-data" class="stack-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="field">
+        <label for="csv_file">CSV file</label>
+        <input id="csv_file" name="csv_file" type="file" accept=".csv,text/csv" required>
+        <p class="hint">UTF-8 encoded. Phone or email is required for each row. Duplicate phone/email values are skipped safely.</p>
+      </div>
+      <button class="btn btn-primary" type="submit" data-submit-once>Import leads</button>
+    </form>
+  </section>
+
+  <section class="panel">
+    <div class="panel-head">
+      <div><p class="eyebrow">Format</p><h2>Accepted columns</h2></div>
+      <a class="text-link" href="{{ url_for('leads.import_template') }}">Template</a>
+    </div>
+    <div class="column-list">
+      {% for column in columns %}
+        <code>{{ column }}</code>
+      {% endfor %}
+    </div>
+    <p class="hint">Required headers: <strong>name, phone, email</strong> (a phone or email value is required per row). Unknown or duplicate headers reject the file rather than guessing.</p>
+    <ul class="check-list">
+      <li>Dates accept <code>YYYY-MM-DD</code> (for example, <code>2026-12-15</code>).</li>
+      <li>Status and source values must match the configured options.</li>
+      <li>Budget values are whole rupees; commas are ignored.</li>
+      <li>Each row is validated server-side; valid rows are committed together.</li>
+    </ul>
+  </section>
+</div>
+{% endblock %}

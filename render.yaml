@@ -1,0 +1,40 @@
+# Render Blueprint for SHA LeadFlow AI.
+# PostgreSQL is deliberately external (Supabase free tier) so records survive
+# free Render web-service restarts and redeploys.
+services:
+  - type: web
+    name: sha-leadflow
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: sh start.sh
+    healthCheckPath: /healthz
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: TRUST_PROXY
+        value: "1"
+      - key: SESSION_COOKIE_SECURE
+        value: "1"
+      - key: AI_PROVIDER
+        value: gemini
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3.5-flash-lite
+      - key: GEMINI_THINKING_LEVEL
+        value: minimal
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: LOG_LEVEL
+        value: INFO
+      - key: WEB_WORKERS
+        value: "2"
+      - key: WEB_THREADS
+        value: "4"

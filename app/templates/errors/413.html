@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Upload too large{% endblock %}
+{% block content %}
+<div class="error-page">
+  <p class="error-code">413</p>
+  <h1>That file is too large.</h1>
+  <p>{{ message or 'The upload is above the request limit.' }}</p>
+  <div class="page-actions">
+    <a class="btn btn-primary" href="{{ url_for('leads.import_page') if g.user else url_for('auth.login') }}">Try another file</a>
+  </div>
+</div>
+{% endblock %}

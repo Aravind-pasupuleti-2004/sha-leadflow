@@ -1,0 +1,302 @@
+{% extends "base.html" %}
+{% from "partials/macros.html" import score_pill, status_badge, ai_chip, avatar, empty_state with context %}
+{% block title %}{{ lead.name }}{% endblock %}
+{% block content %}
+<div class="detail-head">
+  <div class="detail-identity">
+    {{ avatar(lead.name, 'avatar-lg') }}
+    <div>
+      <p class="eyebrow"><a class="crumb" href="{{ url_for('leads.index') }}">Leads</a> / #{{ lead.id }}</p>
+      <h1>{{ lead.name }}</h1>
+      <div class="detail-meta">
+        <span>{{ lead.locality or 'Locality not shared' }}</span>
+        <span class="meta-dot" aria-hidden="true"></span>
+        <span>{{ lead.project_type or 'Scope not set' }}</span>
+        {% if lead.property_type %}<span class="meta-dot" aria-hidden="true"></span><span>{{ lead.property_type }}</span>{% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="page-actions">
+    <a class="btn btn-ghost" href="{{ url_for('leads.edit', lead_id=lead.id) }}">Edit</a>
+    <form method="post" action="{{ url_for('leads.qualify', lead_id=lead.id) }}" data-submit-once>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button class="btn btn-primary" type="submit">{{ 'Refresh AI insight' if lead.ai_summary else 'Qualify with AI' }}</button>
+    </form>
+  </div>
+</div>
+
+<div class="contact-strip">
+  <div class="contact-items">
+    {% if lead.phone %}
+      <a href="tel:{{ lead.normalized_phone or lead.phone }}"><span class="contact-label">Phone</span>{{ lead.phone }}</a>
+    {% endif %}
+    {% if lead.email %}
+      <a href="mailto:{{ lead.email }}"><span class="contact-label">Email</span>{{ lead.email }}</a>
+    {% endif %}
+    <span class="contact-static"><span class="contact-label">Source</span>{{ lead.source }}</span>
+    <span class="contact-static"><span class="contact-label">Added</span>{{ lead.created_at|datefmt }}</span>
+  </div>
+  <form class="status-form" method="post" action="{{ url_for('leads.update_status', lead_id=lead.id) }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label class="sr-only" for="status">Change status</label>
+    <select id="status" name="status">
+      {% for option in lead_statuses %}
+        <option value="{{ option }}" {{ 'selected' if lead.status == option }}>{{ option }}</option>
+      {% endfor %}
+    </select>
+    <button class="btn btn-ghost btn-sm" type="submit">Update</button>
+  </form>
+</div>
+
+<div class="detail-grid">
+  <div class="detail-main">
+    <section class="panel insight-panel">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">AI assist</p>
+          <h2>Qualification insight</h2>
+        </div>
+        {{ ai_chip(lead.ai_provider if lead.ai_summary else None) }}
+      </div>
+      {% if lead.ai_summary %}
+        <p class="insight-summary">{{ lead.ai_summary }}</p>
+        {% if lead.ai_next_action %}
+        <div class="next-action">
+          <span class="next-label">Suggested next action</span>
+          <p>{{ lead.ai_next_action }}</p>
+        </div>
+        {% endif %}
+        <div class="insight-meta">
+          {% if lead.ai_extracted and lead.ai_extracted.get('readiness') %}
+            <span class="mini-tag">Readiness: {{ lead.ai_extracted.get('readiness')|capitalize }}</span>
+          {% endif %}
+          {% if lead.ai_extracted and lead.ai_extracted.get('timeline') %}
+            <span class="mini-tag">{{ lead.ai_extracted.get('timeline') }}</span>
+          {% endif %}
+          {% if lead.ai_extracted and lead.ai_extracted.get('confidence') is not none %}
+            <span class="mini-tag">Confidence: {{ (lead.ai_extracted.get('confidence') * 100)|round|int }}%</span>
+          {% endif %}
+          <span class="mini-tag muted">Updated {{ lead.ai_updated_at|datetimefmt }}</span>
+        </div>
+        {% if lead.ai_provider == 'fallback' %}
+          <p class="inline-note">Rule-based fallback used. The AI provider was unavailable or returned an invalid response; the CRM and score are unaffected.</p>
+        {% else %}
+          <p class="inline-note">AI generated this explanation only. The numerical score remains rule-based, and no contact details were sent.</p>
+        {% endif %}
+      {% else %}
+        <div class="insight-empty">
+          <div>
+            <h3>No AI insight yet</h3>
+            <p class="muted">Generate a short qualification summary and next action. The provider receives project facts and the brief — never name, phone, or email.</p>
+          </div>
+          <form method="post" action="{{ url_for('leads.qualify', lead_id=lead.id) }}" data-submit-once>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-primary" type="submit">Generate insight</button>
+          </form>
+        </div>
+      {% endif %}
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">Rules engine</p>
+          <h2>Lead score</h2>
+        </div>
+        <span class="panel-badge">Deterministic</span>
+      </div>
+      <div class="score-layout">
+        <div class="score-hero">
+          <div class="score-ring" style="--score: {{ lead.score }};">
+            <div class="score-ring-inner">
+              <strong>{{ lead.score }}</strong>
+              <span>/100</span>
+            </div>
+          </div>
+          <p class="score-band">{{ band_label((score.get('band')) if score else 'low') }}</p>
+          <p class="muted small">Not trained on conversion data. Thresholds are configurable business rules.</p>
+        </div>
+        <div class="score-factors">
+          {% for factor in score.get('factors', []) %}
+          <div class="factor">
+            <div class="factor-head">
+              <span>{{ factor.label }}</span>
+              <span class="factor-points">{{ factor.points }}<small>/{{ factor.max }}</small></span>
+            </div>
+            <div class="bar-track" aria-hidden="true"><span class="bar-fill bar-accent" style="width: {{ ((factor.points / factor.max) * 100)|round|int }}%"></span></div>
+            <p class="factor-reason">{{ factor.reason }}</p>
+          </div>
+          {% else %}
+            <div class="insight-empty">
+              <div>
+                <h3>Score breakdown unavailable</h3>
+                <p class="muted">Edit and save this lead to rebuild its deterministic score breakdown.</p>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">Brief</p>
+          <h2>Requirements</h2>
+        </div>
+      </div>
+      {% if lead.requirements %}
+        <div class="requirements">{{ lead.requirements }}</div>
+      {% else %}
+        <p class="muted">No project brief captured yet. <a href="{{ url_for('leads.edit', lead_id=lead.id) }}">Add requirements</a> to improve readiness scoring.</p>
+      {% endif %}
+    </section>
+
+    <section class="panel" id="followups">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">Next steps</p>
+          <h2>Follow-ups</h2>
+        </div>
+        <span class="panel-badge">{{ lead.pending_followups|length }} open</span>
+      </div>
+
+      {% if lead.followups %}
+        <div class="followup-list">
+        {% for followup in lead.followups %}
+          <article class="followup-card {{ 'is-complete' if followup.status == 'completed' }}" id="followup-{{ followup.id }}">
+            <div class="followup-head">
+              <div>
+                <h3>{{ followup.title }}</h3>
+                <div class="followup-meta">
+                  <span class="due-label {{ 'is-overdue' if followup.is_overdue else ('is-today' if followup.due_date == today else '') }}">{{ followup.due_date|due_label }}</span>
+                  <span class="badge badge-soft">{{ followup.status|capitalize }}</span>
+                  {% if followup.status == 'completed' and followup.completed_at %}
+                    <span class="muted small">Completed {{ followup.completed_at|datetimefmt }}</span>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="followup-actions">
+                {% if followup.status == 'pending' %}
+                <form method="post" action="{{ url_for('followups.draft', followup_id=followup.id) }}" data-submit-once>
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button class="btn btn-ghost btn-sm" type="submit">{{ 'Regenerate draft' if followup.draft_message else 'Draft message' }}</button>
+                </form>
+                <form method="post" action="{{ url_for('followups.complete', followup_id=followup.id) }}">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <input type="hidden" name="return_to" value="lead">
+                  <button class="btn btn-soft btn-sm" type="submit">Mark done</button>
+                </form>
+                {% else %}
+                <form method="post" action="{{ url_for('followups.reopen', followup_id=followup.id) }}">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <input type="hidden" name="return_to" value="lead">
+                  <button class="btn btn-ghost btn-sm" type="submit">Reopen</button>
+                </form>
+                {% endif %}
+              </div>
+            </div>
+            {% if followup.notes %}<p class="followup-notes">{{ followup.notes }}</p>{% endif %}
+            {% if followup.draft_message %}
+            <div class="draft-box">
+              <div class="draft-head">
+                <span>Message draft · {{ followup.draft_provider|provider }}</span>
+                <button class="btn-link" type="button" data-copy-target="draft-{{ followup.id }}">Copy</button>
+              </div>
+              <pre class="draft-text" id="draft-{{ followup.id }}">{{ followup.draft_message }}</pre>
+              <p class="draft-warning">Draft only — nothing has been sent by email or WhatsApp.</p>
+            </div>
+            {% endif %}
+          </article>
+        {% endfor %}
+        </div>
+      {% else %}
+        {{ empty_state("No follow-ups yet", "Schedule the next conversation so it appears on the dashboard.") }}
+      {% endif %}
+
+      <div class="subpanel">
+        <h3>Schedule a follow-up</h3>
+        <form method="post" action="{{ url_for('followups.create', lead_id=lead.id) }}" class="followup-form">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <div class="field">
+            <label for="followup-title">Task</label>
+            <input id="followup-title" name="title" type="text" maxlength="180" value="Follow up with {{ lead.name.split()[0] }}" required>
+          </div>
+          <div class="field">
+            <label for="followup-due">Due date</label>
+            <input id="followup-due" name="due_date" type="date" value="{{ today.isoformat() }}" required>
+          </div>
+          <div class="field field-wide">
+            <label for="followup-notes">Notes <span class="label-unit">(optional)</span></label>
+            <textarea id="followup-notes" name="notes" rows="2" maxlength="1000" placeholder="What should the next conversation cover?"></textarea>
+          </div>
+          <div class="field-wide">
+            <button class="btn btn-primary btn-sm" type="submit">Add follow-up</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">History</p>
+          <h2>Activity</h2>
+        </div>
+        <span class="panel-badge">{{ lead.activities|length }} events</span>
+      </div>
+      {% if lead.activities %}
+      <ol class="timeline">
+        {% for activity in lead.activities %}
+        <li class="timeline-item">
+          <span class="timeline-marker" aria-hidden="true"></span>
+          <div class="timeline-body">
+            <p>{{ activity.message }}</p>
+            <span class="timeline-meta">{{ activity.created_at|datetimefmt }}{% if activity.user %} · {{ activity.user.name }}{% endif %}</span>
+          </div>
+        </li>
+        {% endfor %}
+      </ol>
+      {% else %}
+        <p class="muted">No activity recorded.</p>
+      {% endif %}
+    </section>
+  </div>
+
+  <aside class="detail-aside">
+    <section class="panel aside-card">
+      <p class="eyebrow">Record</p>
+      <h3>Lead details</h3>
+      <dl class="detail-list">
+        <div><dt>Status</dt><dd>{{ status_badge(lead.status) }}</dd></div>
+        <div><dt>Score</dt><dd>{{ score_pill(lead.score, (score.get('band')) if score else 'low') }}</dd></div>
+        <div><dt>Property</dt><dd>{{ lead.property_type or '—' }}</dd></div>
+        <div><dt>Project</dt><dd>{{ lead.project_type or '—' }}</dd></div>
+        <div><dt>Budget</dt><dd>{{ lead.budget_min|budget(lead.budget_max) }}</dd></div>
+        <div><dt>Expected start</dt><dd>{{ lead.expected_start|datefmt }}</dd></div>
+        <div><dt>Source</dt><dd>{{ lead.source }}</dd></div>
+        <div><dt>Created</dt><dd>{{ lead.created_at|datetimefmt }}</dd></div>
+        <div><dt>Updated</dt><dd>{{ lead.updated_at|datetimefmt }}</dd></div>
+      </dl>
+    </section>
+
+    <section class="panel aside-card aside-note">
+      <p class="eyebrow">Guardrail</p>
+      <h3>AI without lock-in</h3>
+      <p class="small">Gemini is primary; Groq is optional. There is no automatic paid fallback. If the provider hits a quota, times out, or returns invalid JSON, rule-based text is saved instead.</p>
+      <span class="ai-state {{ 'is-on' if ai_configured else 'is-off' }}">
+        <span class="ai-dot" aria-hidden="true"></span>{{ 'Provider configured' if ai_configured else 'Rule-based mode only' }}
+      </span>
+    </section>
+
+    <section class="panel aside-card">
+      <p class="eyebrow">Do next</p>
+      <h3>Keep it moving</h3>
+      <div class="stack-actions">
+        <a class="btn btn-ghost btn-block" href="{{ url_for('leads.edit', lead_id=lead.id) }}">Edit lead details</a>
+        <a class="btn btn-ghost btn-block" href="{{ url_for('followups.index') }}">Open follow-up queue</a>
+      </div>
+    </section>
+  </aside>
+</div>
+{% endblock %}

@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% from "partials/macros.html" import score_pill, status_badge, empty_state with context %}
+{% block title %}Leads{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <p class="eyebrow">CRM</p>
+    <h1>Leads</h1>
+    <p class="lede">{{ pagination.total }} enquir{{ 'y' if pagination.total == 1 else 'ies' }} in the workspace. Search, filter, and open any record for the full story.</p>
+  </div>
+  <div class="page-actions">
+    <a class="btn btn-ghost" href="{{ url_for('leads.import_page') }}">Import CSV</a>
+    <a class="btn btn-primary" href="{{ url_for('leads.new') }}">New lead</a>
+  </div>
+</div>
+
+<form class="filter-bar" method="get" action="{{ url_for('leads.index') }}" role="search">
+  <div class="filter-search">
+    <label class="sr-only" for="q">Search leads</label>
+    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg>
+    <input id="q" name="q" type="search" value="{{ q }}" placeholder="Search name, phone, email, locality, brief…" maxlength="120">
+  </div>
+  <div class="filter-control">
+    <label for="status">Status</label>
+    <select id="status" name="status">
+      <option value="">All statuses</option>
+      {% for option in lead_statuses %}
+        <option value="{{ option }}" {{ 'selected' if status == option }}>{{ option }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="filter-control">
+    <label for="source">Source</label>
+    <select id="source" name="source">
+      <option value="">All sources</option>
+      {% for option in lead_sources %}
+        <option value="{{ option }}" {{ 'selected' if source == option }}>{{ option }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="filter-control">
+    <label for="sort">Sort</label>
+    <select id="sort" name="sort">
+      {% for key, option in sort_options.items() %}
+        <option value="{{ key }}" {{ 'selected' if sort == key }}>{{ option[0] }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="filter-actions">
+    <button class="btn btn-primary btn-sm" type="submit">Apply</button>
+    {% if q or status or source or sort != 'recent' %}
+      <a class="btn btn-ghost btn-sm" href="{{ url_for('leads.index') }}">Clear</a>
+    {% endif %}
+  </div>
+</form>
+
+<section class="panel">
+  {% if leads %}
+  <div class="table-wrap">
+    <table class="data-table leads-table">
+      <thead>
+        <tr>
+          <th>Lead</th>
+          <th>Contact</th>
+          <th>Requirement</th>
+          <th>Score</th>
+          <th>Status</th>
+          <th>Updated</th>
+          <th><span class="sr-only">Open</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for lead in leads %}
+        <tr>
+          <td>
+            <a class="table-lead" href="{{ url_for('leads.detail', lead_id=lead.id) }}">
+              <span class="avatar avatar-xs">{{ lead.name|initials }}</span>
+              <span>{{ lead.name }}<small>{{ lead.locality or 'Locality not shared' }}</small></span>
+            </a>
+          </td>
+          <td class="contact-cell">
+            {% if lead.phone %}<a href="tel:{{ lead.normalized_phone or lead.phone }}">{{ lead.phone }}</a>{% endif %}
+            {% if lead.email %}<a class="muted-link" href="mailto:{{ lead.email }}">{{ lead.email }}</a>{% endif %}
+            {% if not lead.phone and not lead.email %}<span class="muted">—</span>{% endif %}
+          </td>
+          <td class="requirement-cell">
+            <span class="mini-tag">{{ lead.project_type or 'Scope not set' }}</span>
+            <small>{{ lead.budget_min|budget(lead.budget_max) }}</small>
+          </td>
+          <td>{{ score_pill(lead.score, (lead.score_factors or {}).get('band')) }}</td>
+          <td>{{ status_badge(lead.status) }}</td>
+          <td class="nowrap">{{ lead.updated_at|datefmt }}</td>
+          <td class="cell-action"><a class="row-arrow" href="{{ url_for('leads.detail', lead_id=lead.id) }}" aria-label="Open {{ lead.name }}">→</a></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-foot">
+    <p>Showing {{ ((pagination.page - 1) * pagination.per_page) + 1 }}–{{ [pagination.page * pagination.per_page, pagination.total]|min }} of {{ pagination.total }}</p>
+    {% if pagination.pages > 1 %}
+    <nav class="pagination" aria-label="Lead pages">
+      {% if pagination.has_prev %}
+        <a class="page-link" href="{{ url_for('leads.index', page=pagination.prev_num, q=q, status=status, source=source, sort=sort) }}">← Prev</a>
+      {% else %}
+        <span class="page-link is-disabled">← Prev</span>
+      {% endif %}
+      {% for page_num in pagination.iter_pages(left_edge=1, left_current=1, right_current=2, right_edge=1) %}
+        {% if page_num %}
+          {% if page_num == pagination.page %}
+            <span class="page-link is-current" aria-current="page">{{ page_num }}</span>
+          {% else %}
+            <a class="page-link" href="{{ url_for('leads.index', page=page_num, q=q, status=status, source=source, sort=sort) }}">{{ page_num }}</a>
+          {% endif %}
+        {% else %}
+          <span class="page-gap">…</span>
+        {% endif %}
+      {% endfor %}
+      {% if pagination.has_next %}
+        <a class="page-link" href="{{ url_for('leads.index', page=pagination.next_num, q=q, status=status, source=source, sort=sort) }}">Next →</a>
+      {% else %}
+        <span class="page-link is-disabled">Next →</span>
+      {% endif %}
+    </nav>
+    {% endif %}
+  </div>
+  {% else %}
+    {% if q or status or source %}
+      {{ empty_state("No matches", "Try a broader search or clear the filters.", url_for('leads.index'), "Clear filters") }}
+    {% else %}
+      {{ empty_state("Start the pipeline", "Add the first enquiry or import an existing spreadsheet.", url_for('leads.new'), "Add a lead") }}
+    {% endif %}
+  {% endif %}
+</section>
+{% endblock %}

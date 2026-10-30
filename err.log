@@ -1,0 +1,169 @@
+2026-10-29 20:28:22,815 INFO [werkzeug] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-10-29 20:28:22,826 INFO [werkzeug] [33mPress CTRL+C to quit[0m
+2026-10-29 20:28:22,844 INFO [werkzeug]  * Restarting with stat
+2026-10-29 20:28:23,515 WARNING [werkzeug]  * Debugger is active!
+2026-10-29 20:28:23,529 INFO [werkzeug]  * Debugger PIN: 108-246-116
+2026-10-29 20:28:36,107 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:28:36] "GET /healthz HTTP/1.1" 200 -
+2026-10-29 20:29:32,444 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:29:32] "[32mGET / HTTP/1.1[0m" 302 -
+2026-10-29 20:29:32,510 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:29:32] "GET /login?next=/ HTTP/1.1" 200 -
+2026-10-29 20:29:32,578 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:29:32] "GET /static/css/app.css HTTP/1.1" 200 -
+2026-10-29 20:29:32,578 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:29:32] "GET /static/js/app.js HTTP/1.1" 200 -
+2026-10-29 20:29:32,714 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:29:32] "GET /static/img/favicon.svg HTTP/1.1" 200 -
+2026-10-29 20:30:39,077 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:30:39] "POST /login?next=/ HTTP/1.1" 200 -
+2026-10-29 20:30:39,085 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:30:39] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:30:39,086 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:30:39] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:30:52,468 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:30:52] "POST /login?next=/ HTTP/1.1" 200 -
+2026-10-29 20:30:52,475 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:30:52] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:30:52,476 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:30:52] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:31:06,335 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:31:06] "[32mPOST /login?next=/ HTTP/1.1[0m" 302 -
+2026-10-29 20:31:06,369 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:31:06] "GET / HTTP/1.1" 200 -
+2026-10-29 20:31:06,379 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:31:06] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:31:06,380 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:31:06] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:31:37,166 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:31:37] "GET /leads/new HTTP/1.1" 200 -
+2026-10-29 20:31:37,175 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:31:37] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:31:37,176 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:31:37] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:31:45,372 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:31:45] "GET /followups/ HTTP/1.1" 200 -
+2026-10-29 20:31:45,380 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:31:45] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:31:45,380 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:31:45] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:31:48,456 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:31:48] "GET /leads/ HTTP/1.1" 200 -
+2026-10-29 20:31:48,463 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:31:48] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:31:48,464 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:31:48] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:31:49,608 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:31:49] "GET / HTTP/1.1" 200 -
+2026-10-29 20:31:49,615 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:31:49] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:31:49,616 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:31:49] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:34:11,961 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:34:11] "GET /leads/import HTTP/1.1" 200 -
+2026-10-29 20:34:11,969 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:34:11] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:34:11,970 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:34:11] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:34:25,029 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:34:25] "[31m[1mPOST /leads/import HTTP/1.1[0m" 400 -
+2026-10-29 20:34:25,037 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:34:25] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:34:25,038 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:34:25] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:36:19,441 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:36:19] "POST /leads/import HTTP/1.1" 200 -
+2026-10-29 20:36:19,452 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:36:19] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:36:19,453 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:36:19] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:36:32,796 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:36:32] "GET /leads/ HTTP/1.1" 200 -
+2026-10-29 20:36:32,808 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:36:32] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:36:32,809 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:36:32] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:36:40,953 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:36:40] "GET /leads/ HTTP/1.1" 200 -
+2026-10-29 20:36:45,741 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:36:45] "GET /leads/import HTTP/1.1" 200 -
+2026-10-29 20:36:45,749 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:36:45] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:36:45,750 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:36:45] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:36:51,464 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:36:51] "POST /leads/import HTTP/1.1" 200 -
+2026-10-29 20:36:51,472 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:36:51] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:36:51,473 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:36:51] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:37:52,668 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:37:52] "[32mGET /leads/import/template?utm_source=chatgpt.com HTTP/1.1[0m" 302 -
+2026-10-29 20:37:52,677 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:37:52] "GET /login?next=/leads/import/template?utm_source%3Dchatgpt.com HTTP/1.1" 200 -
+2026-10-29 20:37:52,710 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:37:52] "GET /static/css/app.css HTTP/1.1" 200 -
+2026-10-29 20:37:52,712 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:37:52] "GET /static/js/app.js HTTP/1.1" 200 -
+2026-10-29 20:37:52,817 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:37:52] "GET /static/img/favicon.svg HTTP/1.1" 200 -
+2026-10-29 20:38:18,472 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:38:18] "GET /leads/import/template?utm_source=chatgpt.com HTTP/1.1" 200 -
+2026-10-29 20:39:41,716 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:39:41] "POST /leads/import HTTP/1.1" 200 -
+2026-10-29 20:39:41,725 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:39:41] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:39:41,726 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:39:41] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:40:00,820 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:40:00] "GET / HTTP/1.1" 200 -
+2026-10-29 20:40:00,829 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:40:00] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:40:00,830 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:40:00] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:40:08,974 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:40:08] "GET /leads/ HTTP/1.1" 200 -
+2026-10-29 20:40:08,985 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:40:08] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:40:08,986 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:40:08] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:40:14,825 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:40:14] "GET /leads/new HTTP/1.1" 200 -
+2026-10-29 20:40:14,833 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:40:14] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:40:14,833 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:40:14] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:40:17,811 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:40:17] "GET /leads/ HTTP/1.1" 200 -
+2026-10-29 20:40:20,147 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:40:20] "GET /leads/?q=&status=&source=&sort=recent HTTP/1.1" 200 -
+2026-10-29 20:40:20,154 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:40:20] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:40:20,155 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:40:20] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:40:24,315 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:40:24] "GET /leads/6 HTTP/1.1" 200 -
+2026-10-29 20:40:24,322 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:40:24] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:40:24,323 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:40:24] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:40:37,831 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:40:37] "GET / HTTP/1.1" 200 -
+2026-10-29 20:40:37,840 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:40:37] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:40:37,840 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:40:37] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:40:42,762 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:40:42] "GET /leads/ HTTP/1.1" 200 -
+2026-10-29 20:40:42,772 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:40:42] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:40:42,772 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:40:42] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:40:47,916 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:40:47] "GET /followups/ HTTP/1.1" 200 -
+2026-10-29 20:40:47,924 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:40:47] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:40:47,924 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:40:47] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:40:50,292 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:40:50] "GET / HTTP/1.1" 200 -
+2026-10-29 20:40:50,300 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:40:50] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:40:50,301 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:40:50] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:41:08,543 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:41:08] "GET /leads/ HTTP/1.1" 200 -
+2026-10-29 20:41:08,551 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:41:08] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:41:08,552 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:41:08] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:41:12,004 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:41:12] "GET /leads/24 HTTP/1.1" 200 -
+2026-10-29 20:41:12,012 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:41:12] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:41:12,013 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:41:12] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:42:54,743 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:42:54] "GET / HTTP/1.1" 200 -
+2026-10-29 20:42:54,757 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:42:54] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:42:54,758 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:42:54] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:45:33,651 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:45:33] "GET /leads/import HTTP/1.1" 200 -
+2026-10-29 20:45:33,662 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:45:33] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:45:33,662 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:45:33] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:48:08,585 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:48:08] "GET /followups/ HTTP/1.1" 200 -
+2026-10-29 20:48:08,593 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:48:08] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:48:08,594 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:48:08] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:48:10,485 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:48:10] "GET /followups/?view=all HTTP/1.1" 200 -
+2026-10-29 20:48:10,493 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:48:10] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:48:10,495 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:48:10] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:48:11,949 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:48:11] "GET /followups/?view=completed HTTP/1.1" 200 -
+2026-10-29 20:48:11,957 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:48:11] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:48:11,957 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:48:11] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:48:13,361 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:48:13] "GET /followups/?view=pending HTTP/1.1" 200 -
+2026-10-29 20:48:13,369 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:48:13] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:48:13,370 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:48:13] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:48:15,225 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:48:15] "GET /leads/1 HTTP/1.1" 200 -
+2026-10-29 20:48:15,232 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:48:15] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:48:15,233 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:48:15] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:48:20,404 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:48:20] "GET / HTTP/1.1" 200 -
+2026-10-29 20:48:20,412 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:48:20] "[36mGET /static/css/app.css HTTP/1.1[0m" 304 -
+2026-10-29 20:48:20,412 INFO [werkzeug] 127.0.0.1 - - [29/Oct/2026 20:48:20] "[36mGET /static/js/app.js HTTP/1.1[0m" 304 -
+2026-10-29 20:59:41,724 INFO [werkzeug]  * Detected change in 'E:\\sha interiors\\app\\models.py', reloading
+2026-10-29 20:59:41,835 INFO [werkzeug]  * Restarting with stat
+2026-10-29 20:59:42,458 WARNING [werkzeug]  * Debugger is active!
+2026-10-29 20:59:42,461 INFO [werkzeug]  * Debugger PIN: 108-246-116
+2026-10-29 20:59:47,517 INFO [werkzeug]  * Detected change in 'E:\\sha interiors\\app\\models.py', reloading
+2026-10-29 20:59:47,607 INFO [werkzeug]  * Restarting with stat
+2026-10-29 20:59:48,221 WARNING [werkzeug]  * Debugger is active!
+2026-10-29 20:59:48,224 INFO [werkzeug]  * Debugger PIN: 108-246-116
+2026-10-29 20:59:59,341 INFO [werkzeug]  * Detected change in 'E:\\sha interiors\\app\\models.py', reloading
+2026-10-29 20:59:59,435 INFO [werkzeug]  * Restarting with stat
+2026-10-29 21:00:00,051 WARNING [werkzeug]  * Debugger is active!
+2026-10-29 21:00:00,054 INFO [werkzeug]  * Debugger PIN: 108-246-116
+2026-10-29 21:00:32,393 INFO [werkzeug]  * Detected change in 'E:\\sha interiors\\app\\models.py', reloading
+2026-10-29 21:00:32,485 INFO [werkzeug]  * Restarting with stat
+2026-10-29 21:00:33,097 WARNING [werkzeug]  * Debugger is active!
+2026-10-29 21:00:33,100 INFO [werkzeug]  * Debugger PIN: 108-246-116
+2026-10-29 21:02:00,958 INFO [werkzeug]  * Detected change in 'E:\\sha interiors\\migrations\\versions\\a1b2c3d4e5f6_automation_whatsapp_jobs.py', reloading
+2026-10-29 21:02:01,069 INFO [werkzeug]  * Restarting with stat
+2026-10-29 21:02:01,738 WARNING [werkzeug]  * Debugger is active!
+2026-10-29 21:02:01,741 INFO [werkzeug]  * Debugger PIN: 108-246-116
+2026-10-29 21:13:39,358 INFO [werkzeug]  * Detected change in 'E:\\sha interiors\\migrations\\versions\\a1b2c3d4e5f6_automation_whatsapp_jobs.py', reloading
+2026-10-29 21:13:39,459 INFO [werkzeug]  * Restarting with stat
+2026-10-29 21:13:40,129 WARNING [werkzeug]  * Debugger is active!
+2026-10-29 21:13:40,132 INFO [werkzeug]  * Debugger PIN: 108-246-116
+2026-10-29 21:14:24,598 INFO [werkzeug]  * Detected change in 'E:\\sha interiors\\migrations\\versions\\a1b2c3d4e5f6_automation_whatsapp_jobs.py', reloading
+2026-10-29 21:14:24,694 INFO [werkzeug]  * Restarting with stat
+2026-10-29 21:14:25,326 WARNING [werkzeug]  * Debugger is active!
+2026-10-29 21:14:25,330 INFO [werkzeug]  * Debugger PIN: 108-246-116
+2026-10-29 21:31:20,660 INFO [werkzeug]  * Detected change in 'E:\\sha interiors\\app\\services\\whatsapp\\webhook.py', reloading
+2026-10-29 21:31:20,762 INFO [werkzeug]  * Restarting with stat
+2026-10-29 21:31:21,466 WARNING [werkzeug]  * Debugger is active!
+2026-10-29 21:31:21,469 INFO [werkzeug]  * Debugger PIN: 108-246-116
+2026-10-29 21:31:55,799 INFO [werkzeug]  * Detected change in 'E:\\sha interiors\\app\\services\\leads.py', reloading
+2026-10-29 21:31:55,898 INFO [werkzeug]  * Restarting with stat
+Traceback (most recent call last):
+  File "E:\sha interiors\wsgi.py", line 9, in <module>
+    from app import create_app  # noqa: E402
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\sha interiors\app\__init__.py", line 12, in <module>
+    from .cli import register_cli
+  File "E:\sha interiors\app\cli.py", line 15, in <module>
+    from .services.leads import create_lead, recalculate_score
+  File "E:\sha interiors\app\services\leads.py", line 16, in <module>
+    from .automation import enqueue_automation
+  File "E:\sha interiors\app\services\automation\__init__.py", line 2, in <module>
+    from .service import enqueue_automation, qualify_new_lead, schedule_followups
+  File "E:\sha interiors\app\services\automation\service.py", line 16, in <module>
+    from ..extensions import db
+ModuleNotFoundError: No module named 'app.services.extensions'

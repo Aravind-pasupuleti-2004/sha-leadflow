@@ -1,0 +1,70 @@
+{% macro score_pill(score, band=None) -%}
+  {% set tone = band or ('hot' if score >= high_priority_threshold else ('warm' if score >= warm_priority_threshold else 'nurture')) %}
+  <span class="score-pill score-{{ tone }}"><strong>{{ score }}</strong><span>/100</span></span>
+{%- endmacro %}
+
+{% macro status_badge(status) -%}
+  <span class="badge status-{{ status|statusclass }}">{{ status }}</span>
+{%- endmacro %}
+
+{% macro ai_chip(provider) -%}
+  {% set key = (provider or 'none')|lower %}
+  <span class="ai-chip ai-{{ 'fallback' if key == 'fallback' else ('none' if key == 'none' else 'live') }}">
+    <span class="ai-dot" aria-hidden="true"></span>{{ provider|provider }}
+  </span>
+{%- endmacro %}
+
+{% macro avatar(name, size='') -%}
+  <span class="avatar {{ size }}" aria-hidden="true">{{ name|initials }}</span>
+{%- endmacro %}
+
+{% macro flash_messages() -%}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-stack" role="status" aria-live="polite">
+        {% for category, message in messages %}
+          <div class="flash flash-{{ category if category in ['success','error','warning','info'] else 'info' }}">
+            <span class="flash-mark" aria-hidden="true"></span>
+            <p>{{ message }}</p>
+            <button type="button" class="flash-close" data-dismiss aria-label="Dismiss message">&times;</button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+{%- endmacro %}
+
+{% macro followup_card(followup, return_to='dashboard', show_lead=True) -%}
+  <article class="reminder {{ 'is-overdue' if followup.is_overdue else '' }}" id="followup-{{ followup.id }}">
+    <div class="reminder-main">
+      {% if show_lead %}
+        <a class="reminder-lead" href="{{ url_for('leads.detail', lead_id=followup.lead_id) }}#followups">{{ followup.lead.name }}</a>
+      {% endif %}
+      <p class="reminder-title">{{ followup.title }}</p>
+      <div class="reminder-meta">
+        <span class="due-label {{ 'is-overdue' if followup.is_overdue else ('is-today' if followup.due_date == today else '') }}">{{ followup.due_date|due_label }}</span>
+        {% if followup.draft_message %}<span class="mini-tag">Draft ready</span>{% endif %}
+      </div>
+    </div>
+    <div class="reminder-actions">
+      {% if followup.status == 'pending' %}
+        <form method="post" action="{{ url_for('followups.complete', followup_id=followup.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="return_to" value="{{ return_to }}">
+          <button class="btn btn-ghost btn-sm" type="submit">Mark done</button>
+        </form>
+      {% endif %}
+    </div>
+  </article>
+{%- endmacro %}
+
+{% macro empty_state(title, copy, action_url=None, action_label=None) -%}
+  <div class="empty-state">
+    <span class="empty-mark" aria-hidden="true">✦</span>
+    <h3>{{ title }}</h3>
+    <p>{{ copy }}</p>
+    {% if action_url and action_label %}
+      <a class="btn btn-primary btn-sm" href="{{ action_url }}">{{ action_label }}</a>
+    {% endif %}
+  </div>
+{%- endmacro %}

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% from "partials/macros.html" import empty_state with context %}
+{% block title %}Follow-ups{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <p class="eyebrow">Reminders</p>
+    <h1>Follow-up queue</h1>
+    <p class="lede">No background worker is required. Due tasks are computed every time the workspace is opened.</p>
+  </div>
+  <div class="page-actions">
+    <a class="btn btn-primary" href="{{ url_for('leads.index') }}">Find a lead</a>
+  </div>
+</div>
+
+<nav class="tabs" aria-label="Follow-up filters">
+  <a class="tab {{ 'is-active' if view == 'pending' }}" href="{{ url_for('followups.index', view='pending') }}">Open <span>{{ counts.get('pending', 0) }}</span></a>
+  <a class="tab {{ 'is-active' if view == 'overdue' }}" href="{{ url_for('followups.index', view='overdue') }}">Overdue <span class="{{ 'tab-alert' if overdue_count else '' }}">{{ overdue_count }}</span></a>
+  <a class="tab {{ 'is-active' if view == 'completed' }}" href="{{ url_for('followups.index', view='completed') }}">Completed <span>{{ counts.get('completed', 0) }}</span></a>
+  <a class="tab {{ 'is-active' if view == 'all' }}" href="{{ url_for('followups.index', view='all') }}">All <span>{{ counts.get('pending', 0) + counts.get('completed', 0) }}</span></a>
+</nav>
+
+<section class="panel">
+  {% if followups %}
+  <div class="table-wrap">
+    <table class="data-table followup-table">
+      <thead>
+        <tr><th>Lead</th><th>Task</th><th>Due</th><th>Status</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        {% for followup in followups %}
+        <tr class="{{ 'row-muted' if followup.status == 'completed' }}">
+          <td>
+            <a class="table-lead" href="{{ url_for('leads.detail', lead_id=followup.lead.id) }}#followups">
+              <span class="avatar avatar-xs">{{ followup.lead.name|initials }}</span>
+              <span>{{ followup.lead.name }}<small>{{ followup.lead.project_type or 'Scope not set' }}</small></span>
+            </a>
+          </td>
+          <td>
+            <strong class="task-title">{{ followup.title }}</strong>
+            {% if followup.notes %}<small class="task-note">{{ followup.notes }}</small>{% endif %}
+            {% if followup.draft_message %}<span class="mini-tag">Draft ready</span>{% endif %}
+          </td>
+          <td class="nowrap">
+            <span class="due-label {{ 'is-overdue' if followup.is_overdue else ('is-today' if followup.due_date == today else '') }}">{{ followup.due_date|due_label }}</span>
+            <small class="block-muted">{{ followup.due_date|datefmt }}</small>
+          </td>
+          <td><span class="badge {{ 'status-won' if followup.status == 'completed' else 'badge-soft' }}">{{ followup.status|capitalize }}</span></td>
+          <td>
+            <div class="table-actions">
+              <a class="btn btn-ghost btn-sm" href="{{ url_for('leads.detail', lead_id=followup.lead.id) }}#followup-{{ followup.id }}">Open</a>
+              {% if followup.status == 'pending' %}
+              <form method="post" action="{{ url_for('followups.complete', followup_id=followup.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="return_to" value="followups">
+                <button class="btn btn-soft btn-sm" type="submit">Done</button>
+              </form>
+              {% else %}
+              <form method="post" action="{{ url_for('followups.reopen', followup_id=followup.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="return_to" value="followups">
+                <button class="btn btn-ghost btn-sm" type="submit">Reopen</button>
+              </form>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="table-foot">
+    <p>Showing {{ ((pagination.page - 1) * pagination.per_page) + 1 }}–{{ [pagination.page * pagination.per_page, pagination.total]|min }} of {{ pagination.total }}</p>
+    {% if pagination.pages > 1 %}
+    <nav class="pagination" aria-label="Follow-up pages">
+      {% if pagination.has_prev %}<a class="page-link" href="{{ url_for('followups.index', view=view, page=pagination.prev_num) }}">← Prev</a>{% else %}<span class="page-link is-disabled">← Prev</span>{% endif %}
+      {% for page_num in pagination.iter_pages(left_edge=1, left_current=1, right_current=2, right_edge=1) %}
+        {% if page_num %}
+          {% if page_num == pagination.page %}<span class="page-link is-current" aria-current="page">{{ page_num }}</span>{% else %}<a class="page-link" href="{{ url_for('followups.index', view=view, page=page_num) }}">{{ page_num }}</a>{% endif %}
+        {% else %}<span class="page-gap">…</span>{% endif %}
+      {% endfor %}
+      {% if pagination.has_next %}<a class="page-link" href="{{ url_for('followups.index', view=view, page=pagination.next_num) }}">Next →</a>{% else %}<span class="page-link is-disabled">Next →</span>{% endif %}
+    </nav>
+    {% endif %}
+  </div>
+  {% else %}
+    {% if view == 'overdue' %}
+      {{ empty_state("No overdue tasks", "Everything in the queue is on time.", url_for('followups.index'), "Show open tasks") }}
+    {% elif view == 'completed' %}
+      {{ empty_state("No completed tasks", "Completed follow-ups will collect here.", url_for('followups.index'), "Show open tasks") }}
+    {% else %}
+      {{ empty_state("Queue is clear", "Schedule follow-ups from any lead record.", url_for('leads.index'), "Open leads") }}
+    {% endif %}
+  {% endif %}
+</section>
+{% endblock %}
